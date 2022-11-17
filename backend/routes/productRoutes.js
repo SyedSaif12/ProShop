@@ -9,6 +9,7 @@ import Product from '../models/productModel.js'
 // @access Public
 router.get('/', asyncHandler(async (req, res) => {
     const products = await Product.find({})
+    //res.status(401).json({message: 'Un authenticated Call has been made'})
     res.json(products)
 }))
 
