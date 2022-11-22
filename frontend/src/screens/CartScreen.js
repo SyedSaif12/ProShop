@@ -33,6 +33,7 @@ const CartScreen = () => {
 
     const checkOutHandler = () => { 
       console.log('Check')  
+      
     }
 
 
