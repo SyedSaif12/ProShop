@@ -5,16 +5,19 @@ import { useDispatch, useSelector } from 'react-redux'
 import Message from '../components/Message'
 import Loader from '../components/Loader'
 import FormContainer from '../components/FormContainer'
-import { login, setToDefault } from '../actions/userActions'
+import { login, register, setToDefault } from '../actions/userActions'
 
-const LoginScreen = () => {
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
+const RegisterScreen = () => {
+    const [name, setName] = useState('')
+    const [email, setEmail] = useState('')
+    const [password, setPassword] = useState('')
+    const [confrimPassword, setConfrimPassword] = useState('')
+    const [message, setMessage] = useState('')
 
   const dispatch = useDispatch()
 
-  const userLogin = useSelector((state) => state.userLogin)
-  const { loading, error, userInfo } = userLogin
+  const userRegister = useSelector((state) => state.userRegister)
+  const { loading, error, userInfo } = userRegister
   let navigate = useNavigate();
   const location = useLocation()
   console.log(location)
@@ -29,10 +32,11 @@ const LoginScreen = () => {
     }
     console.log(error);
 
-    if (error !== undefined) {
+    if (error !== undefined || message !== '') {
       setTimeout(() => {
         dispatch(setToDefault())
-      }, 5000);
+        setMessage('')
+      }, 8000);
     }
 
 
@@ -42,7 +46,12 @@ const LoginScreen = () => {
 
   const submitHandler = (e) => {
     // e.preventDefault()
-    dispatch(login(email, password))
+    /// dispatch registerUser
+    if(password !== confrimPassword){
+        setMessage("Password Do Not Matched");
+    } else {
+    dispatch(register(name, email, password))
+    }
   }
 
   return (
@@ -51,8 +60,18 @@ const LoginScreen = () => {
       <Col xs={12} md={6}>
       <h1>Sign In</h1>
       {error && <Message variant='danger' error={error} />}
+      {message && <Message variant='danger' error={message} />}
       {loading && <Loader />}
       <Form>
+      <Form.Group controlId='email'>
+          <Form.Label>Name</Form.Label>
+          <Form.Control
+            type='name'
+            placeholder='Enter Name'
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+          ></Form.Control>
+        </Form.Group>
         <Form.Group controlId='email'>
           <Form.Label>Email Address</Form.Label>
           <Form.Control
@@ -73,16 +92,26 @@ const LoginScreen = () => {
           ></Form.Control>
         </Form.Group>
 
+        <Form.Group controlId='password'>
+          <Form.Label>Confrim Password</Form.Label>
+          <Form.Control
+            type='password'
+            placeholder='Enter Confrim password'
+            value={confrimPassword}
+            onChange={(e) => setConfrimPassword(e.target.value)}
+          ></Form.Control>
+        </Form.Group>
+
         
       </Form>
       <Button type='submit' variant='primary' onClick={() => submitHandler()} style={{ marginTop: 20 }}>
-          Sign In
+          Register
         </Button>
 
       <Row className='py-3'>
         <Col>
-          New Customer?{' '}
-          <Link to={redirect ? `/register?redirect=${redirect}` : '/register'}>
+          Have An Account?{' '}
+          <Link to={redirect ? `/login?redirect=${redirect}` : '/register'}>
             Register
           </Link>
         </Col>
@@ -93,4 +122,4 @@ const LoginScreen = () => {
   )
 }
 
-export default LoginScreen
+export default RegisterScreen
